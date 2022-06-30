@@ -34,8 +34,35 @@ wiki_columns_to_keep = [column for column in wiki_movies_df.columns if wiki_movi
 wiki_movies_df = wiki_movies_df[wiki_columns_to_keep]
 ```
 
-With that  we reduced the number of columns to 21 useful, data-filled columns
-the Kaggle metadata had 24 columns an the Kaggle ratings data had 4 columns.
+With that the number of columns was reduced to 21 useful, data-filled columns.
+
+The release date , box office, budget and running time columns were then converted and parsed using Regular Expressions. With that cleaning of the Wikipedia file was completed.
+
+The Kaggle data was much more structured so required lesser cleaning. The movie metadata had 24 columns with some having the wrong data types so they were converted using the code below:
+
+``` python
+kaggle_metadata['budget'] = kaggle_metadata['budget'].astype(int)
+kaggle_metadata['id'] = pd.to_numeric(kaggle_metadata['id'], errors='raise')
+kaggle_metadata['popularity'] = pd.to_numeric(kaggle_metadata['popularity'], errors='raise')
+kaggle_metadata['release_date'] = pd.to_datetime(kaggle_metadata['release_date'])
+```
+There was also some corrupted data that had the columns scrambled for 3 movies and they were removed. This brought an end to the cleaning of the Kaggle metadata.
+
+The Kaggle ratings data had 4 columns and 26024289 rows. Using the info() method on the ratings dataframe the results below was obtained. 
+
+``` python
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 26024289 entries, 0 to 26024288
+Data columns (total 4 columns):
+userId       26024289 non-null int64
+movieId      26024289 non-null int64
+rating       26024289 non-null float64
+timestamp    26024289 non-null int64
+dtypes: float64(1), int64(3)
+memory usage: 794.2 MB
+```
+
+
 
 The wikipedia movies JSON file was converted to a data frame and further transformed to reduce teh columns from 193 to 23 columns. The transformed Wikipedia data was then merged with the Kaggle metadata and named movies. The ratings 
 
