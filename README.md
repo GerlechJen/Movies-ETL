@@ -107,8 +107,11 @@ Next the Kaggle metadata and MovieLens rating data was extracted and transformed
 The movies_df DataFrame and ratings CSV was then added to a SQL database.
 
 ## Results 
+It was confirmed that the movies table has 6,052 rows aas seen in the image below. 
 ![image1](https://github.com/GerlechJen/Movies-ETL/blob/main/Resources/movies_query.png)
 
+
+It was also confirmed that the ratings table has 26,024,289 rows as seen in the image below.
 ![image2](https://github.com/GerlechJen/Movies-ETL/blob/main/Resources/ratings_query.png)
 
 ## Summary 
