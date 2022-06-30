@@ -22,7 +22,19 @@ wiki_movies = [movie for movie in wiki_movies_raw
 ```
 The above code reduced the number of columns to 75 and number of rows to 7,076.
 
-Further cleaning was performed on the Wikipedia movies dataframe by 
+Further cleaning was performed on the Wikipedia movies dataframe by creating a function called clean_movie. The function combined all the different language columns for alternate titles of movies as one. There were also quite a few columns with slightly different names but the same data, such as "Directed by" and "Director." 
+So a new function called clean_column_name was created under the clean_movie function to consolidate such columns into one column.
+
+This reduced the number of columns to 40. There were duplicate rows of IMDb Ids that were also dropped which reduced the number of rows by 3. 
+
+It was also discovered that more than half of the columns had null values. So the columns were trimmed down by using only columns that have less than 90% null values. The code used for that is found below:
+
+``` python
+wiki_columns_to_keep = [column for column in wiki_movies_df.columns if wiki_movies_df[column].isnull().sum() < len(wiki_movies_df) * 0.9]
+wiki_movies_df = wiki_movies_df[wiki_columns_to_keep]
+```
+
+With that  we reduced the number of columns to 21 useful, data-filled columns
 the Kaggle metadata had 24 columns an the Kaggle ratings data had 4 columns.
 
 The wikipedia movies JSON file was converted to a data frame and further transformed to reduce teh columns from 193 to 23 columns. The transformed Wikipedia data was then merged with the Kaggle metadata and named movies. The ratings 
