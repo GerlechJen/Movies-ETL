@@ -61,22 +61,55 @@ timestamp    26024289 non-null int64
 dtypes: float64(1), int64(3)
 memory usage: 794.2 MB
 ```
+The timestamp column was converted to datetime data type using the code:
+``` python
+pd.to_datetime(ratings['timestamp'], unit='s')
+```
+
+The statistics of the ratings data was checked for errors using a histogram of the rating distributions, and also using the describe() method to print out some stats on central tendency and spread. 
+
+The user id column was renamed to count. The ratings data was also pivoted so that movieId is the index, columns are the rating values, and the rows are the counts for each rating value using the code:
+``` python
+rating_counts = ratings.groupby(['movieId','rating'], as_index=False).count() \
+                .rename({'userId':'count'}, axis=1) \
+                .pivot(index='movieId',columns='rating', values='count')
+```
+
+The This also brought an end to the cleaning of theratings data.
 
 
+The Wikipedia data and Kaggle metadata were then joined together as movies_df by the IMDb ID and further cleaning done where the data overlap or have redundant columns. The columns were also renamed to be more consistent. 
+ The rating_counts was then left merged with the movies_df as movies_with_ratings_df with movies which did not have any rating being replaced with 0.
+The movies_df was imported using this code:
+``` python
+movies_df.to_sql(name='movies', con=engine)
+```
+Because the ratings data is too large it was imported in chunks using the below code:
+``` python
+rows_imported = 0
+# get the start_time from time.time()
+start_time = time.time()
+for data in pd.read_csv(f'{file_dir}ratings.csv', chunksize=1000000):
+    print(f'importing rows {rows_imported} to {rows_imported + len(data)}...', end='')
+    data.to_sql(name='ratings', con=engine, if_exists='append')
+    rows_imported += len(data)
 
-The wikipedia movies JSON file was converted to a data frame and further transformed to reduce teh columns from 193 to 23 columns. The transformed Wikipedia data was then merged with the Kaggle metadata and named movies. The ratings 
+    # add elapsed time to final print out
+    print(f'Done. {time.time() - start_time} total seconds elapsed')
+```
 
-The merged data was then sent to PostgreSQL 
-Using the code 
+In the continuing project, an automated pipeline that takes in new data, performs the appropriate transformations, and loads the data into existing tables was created The code already created was refactored to create one function that takes in the three files—Wikipedia data, Kaggle metadata, and the MovieLens rating data—and performs the ETL process by adding the data to the PostgreSQL database.
 
-The row count for movies was 6052.
+An ETL function was written to read in the three data files. extract and transform The Wikipedia data was extracted and transformed so it can be merged with the Kaggle metadata. A try-except block was used to catch errors while extracting the IMDb IDs using a regular expression string and dropping duplicates.
 
-The code 
+Next the Kaggle metadata and MovieLens rating data was extracted and transformed.The transformed data was converted into separate DataFrames. The Kaggle metadata DataFrame was merged with the Wikipedia movies DataFrame to create the movies_df DataFrame. Finally, the MovieLens rating data DataFrame was merged with the movies_df DataFrame to create the movies_with_ratings_df.
 
-provided the row count of ratings as 26,024,289
+The movies_df DataFrame and ratings CSV was then added to a SQL database.
 
 ## Results 
+![image1](https://github.com/GerlechJen/Movies-ETL/blob/main/Resources/movies_query.png)
 
+![image2](https://github.com/GerlechJen/Movies-ETL/blob/main/Resources/ratings_query.png)
 
 ## Summary 
 The JSON file and 2 Kaggle CSV files were successfuly extracted, transformed, and loaded to a PostgreSQL database for the hackathon. 
