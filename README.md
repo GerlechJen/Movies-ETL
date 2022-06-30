@@ -7,7 +7,23 @@ The data will first be extracted from the two sources, transformed into one clea
 
 In this module, python and pandas was used to perform data wranggling and then PostgreSQL used to store the finished data. The Extract, Transform, and Load (ETL)  process was used to create the data pipelines. Regular expressions (Regex) was also used to parse data and transform text into numbers.
 
-The raw wikipedia data had 193 columns, the Kaggle metadata had 24 columns an the Kaggle ratings data had 4 columns.
+The raw wikipedia movie data was converted to a dataframe using ther code 
+
+``` Python
+wiki_movies_df = pd.DataFrame(wiki_movies_raw)
+``` 
+The dataframe had 193 columns, which is a lot. We modified it by restricting it to only entries that have a director and an IMDb link but no No. of episodes using a list comprehension.
+
+``` python
+wiki_movies = [movie for movie in wiki_movies_raw
+               if ('Director' in movie or 'Directed by' in movie)
+                   and 'imdb_link' in movie
+                   and 'No. of episodes' not in movie]
+```
+The above code reduced the number of columns to 75 and number of rows to 7,076.
+
+Further cleaning was performed on the Wikipedia movies dataframe by 
+the Kaggle metadata had 24 columns an the Kaggle ratings data had 4 columns.
 
 The wikipedia movies JSON file was converted to a data frame and further transformed to reduce teh columns from 193 to 23 columns. The transformed Wikipedia data was then merged with the Kaggle metadata and named movies. The ratings 
 
