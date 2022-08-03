@@ -117,3 +117,10 @@ It was also confirmed that the ratings table has 26,024,289 rows as seen in the 
 
 ## Summary 
 The JSON file and Kaggle CSV files were successfuly extracted, transformed, and loaded to a PostgreSQL database for the hackathon. 
+
+
+----
+
+**Completed by:** Jennifer Anno-Kusi
+
+**Email:** jannokusi@gmail.com 
